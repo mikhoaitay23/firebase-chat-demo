@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">firebase-chat-demo</string>
+
+    //Signup
+    <string name="sign_up">Sign up</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+
+    //Login
+    <string name="login">Login</string>
+
+    //Home
+    <string name="logout">Log out</string>
+
+    //error
+    <string name="empty_input">Empty input</string>
+    <string name="sign_up_failed">Sign up not successful</string>
+    <string name="login_failed">Login not successful</string>
 </resources>
