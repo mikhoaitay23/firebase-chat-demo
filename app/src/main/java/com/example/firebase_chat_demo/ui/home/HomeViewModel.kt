@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.example.firebase_chat_demo.data.model.user.User
 import com.example.firebase_chat_demo.data.response.DataResponse
+import com.example.firebase_chat_demo.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -17,7 +18,7 @@ class HomeViewModel(val application: Application) : ViewModel() {
     init {
         mFirebaseUser = FirebaseAuth.getInstance().currentUser
         mDatabaseReference =
-            FirebaseDatabase.getInstance().getReference("Users").child(mFirebaseUser!!.uid)
+            FirebaseDatabase.getInstance().getReference(Constants.USERS_TABLE).child(mFirebaseUser!!.uid)
     }
 
     fun getCurrentUser() {
@@ -32,6 +33,10 @@ class HomeViewModel(val application: Application) : ViewModel() {
             }
 
         })
+    }
+
+    val imageUrl: LiveData<String> = Transformations.map(currentUserLiveData) {
+        (it as DataResponse.DataSuccessResponse).body.imageURL
     }
 
     val userName: LiveData<String> = Transformations.map(currentUserLiveData) {

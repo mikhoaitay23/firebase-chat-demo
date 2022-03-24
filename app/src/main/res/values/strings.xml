@@ -12,6 +12,10 @@
 
     //Home
     <string name="logout">Log out</string>
+    <string name="friend">Friend</string>
+
+    //Message
+    <string name="enter_message">Enter message</string>
 
     //error
     <string name="empty_input">Empty input</string>

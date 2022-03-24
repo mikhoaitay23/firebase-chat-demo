@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:paddingStart="8dp"
+        android:focusable="true">
+
+        <View
+            android:id="@+id/mViewChatPadding"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_alignParentTop="true" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mViewChatPadding">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvChatMessage"
+                style="@style/CardViewChat"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                app:cardBackgroundColor="@color/design_default_color_primary">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/mLayoutChatContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvChatMessage"
+                        style="@style/TextViewChatContent"
+                        android:text="Hi, how are you today?"
+                        android:textColor="@color/white" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvEdited"
+                        style="@style/TextViewChatEdited"
+                        android:text="(edited)"
+                        android:textColor="#d8ceff"
+                        android:visibility="gone" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/mLayoutUrlPreview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"
+                            android:layout_marginBottom="8dp"
+                            android:background="@android:color/darker_gray"
+                            android:maxWidth="260dp" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvUrlPreviewSiteName"
+                            style="@style/TextViewPreviewSiteName"
+                            android:text="\@Reddit"
+                            android:textColor="@color/white" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvUrlPreviewTitle"
+                            style="@style/TextViewPreviewTitle"
+                            android:text="Title will be here."
+                            android:textColor="@color/white" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvUrlPreviewDescription"
+                            style="@style/TextViewPreviewDescription"
+                            android:text="Description will be here. Blah Blah WWW Blah Wl Blah W WW WW ABCD EFG WW WW WW W Third Line. WWW Z XCVB QWER"
+                            android:textColor="@color/white" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgUrlPreviewMain"
+                            android:layout_width="match_parent"
+                            android:layout_height="148dp"
+                            android:adjustViewBounds="true"
+                            android:maxWidth="260dp"
+                            android:scaleType="centerCrop" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvChatTime"
+                style="@style/TextViewChatTime"
+                android:text="21:27"
+                android:layout_toStartOf="@id/cvChatMessage"
+                android:layout_alignBottom="@id/cvChatMessage" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</layout>

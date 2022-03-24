@@ -39,7 +39,7 @@ class SignupViewModel(val application: Application) : ViewModel() {
                         val mFirebaseUser = mFirebaseAuth!!.currentUser
                         val userId = mFirebaseUser!!.uid
                         mDatabaseReference =
-                            FirebaseDatabase.getInstance().getReference("Users").child(userId)
+                            FirebaseDatabase.getInstance().getReference(Constants.USERS_TABLE).child(userId)
 
                         val mHashMap: HashMap<String, String> = HashMap()
                         mHashMap["id"] = userId

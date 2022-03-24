@@ -38,10 +38,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.btnLogout){
-            FirebaseAuth.getInstance().signOut()
-            findNavController().navigateUp()
-            return true
+        when (item.itemId) {
+            R.id.btnLogout -> {
+                FirebaseAuth.getInstance().signOut()
+                findNavController().navigateUp()
+                return true
+            }
+            R.id.btnUsers -> {
+                findNavController().navigate(R.id.action_global_usersFragment)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }

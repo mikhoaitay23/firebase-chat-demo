@@ -26,6 +26,24 @@
         android:name="com.example.firebase_chat_demo.ui.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.example.firebase_chat_demo.ui.users.UsersFragment"
+        android:label="UsersFragment"
+        tools:layout="@layout/fragment_users" />
+
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.example.firebase_chat_demo.ui.message.MessageFragment"
+        android:label="MessageFragment"
+        tools:layout="@layout/fragment_message">
+        <argument
+            android:name="userId"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment" />
@@ -35,5 +53,11 @@
     <action
         android:id="@+id/action_global_homeFragment"
         app:destination="@id/homeFragment" />
+    <action
+        android:id="@+id/action_global_usersFragment"
+        app:destination="@id/usersFragment" />
+    <action
+        android:id="@+id/action_global_messageFragment"
+        app:destination="@id/messageFragment" />
 
 </navigation>

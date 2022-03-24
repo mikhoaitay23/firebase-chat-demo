@@ -24,12 +24,24 @@
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/ToolBarStyle">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.userName}"
-                    android:textAppearance="?textAppearanceSubtitle1"/>
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:setCircleImage="@{viewModel.imageUrl}" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@{viewModel.userName}"
+                        android:textAppearance="?textAppearanceHeadline6" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>

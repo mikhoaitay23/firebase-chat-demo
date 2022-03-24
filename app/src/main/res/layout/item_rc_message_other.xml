@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgImageProfile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvNickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/imgImageProfile"
+                android:layout_marginBottom="4dp"
+                android:layout_toEndOf="@id/imgImageProfile"
+                android:text="Daniel Silberschatz"
+                android:textSize="16sp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvChatMessage"
+                style="@style/CardViewChat"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_below="@id/tvNickname"
+                android:layout_toEndOf="@id/imgImageProfile"
+                app:cardBackgroundColor="@color/bg_chat_bubble_other">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/mLayoutChatContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvChatMessage"
+                        style="@style/TextViewChatContent"
+                        android:text="Hi, how are you today?"
+                        android:textColor="@color/black" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvEdited"
+                        style="@style/TextViewChatEdited"
+                        android:text="(edited)"
+                        android:textColor="#828282"
+                        android:visibility="gone" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/mLayoutUrlPreview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"
+                            android:layout_marginBottom="8dp"
+                            android:background="@android:color/darker_gray"
+                            android:maxWidth="260dp" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvUrlPreviewSiteName"
+                            style="@style/TextViewPreviewSiteName"
+                            android:text="\@Reddit"
+                            android:textColor="@color/black" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvUrlPreviewTitle"
+                            style="@style/TextViewPreviewTitle"
+                            android:text="Title will be here."
+                            android:textColor="@color/black" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvUrlPreviewDescription"
+                            style="@style/TextViewPreviewDescription"
+                            android:text="Description will be here. Blah Blah WWW Blah Wl Blah W WW WW ABCD EFG WW WW WW W Third Line. WWW Z XCVB QWER"
+                            android:textColor="@color/black" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgUrlPreviewMain"
+                            android:layout_width="match_parent"
+                            android:layout_height="148dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvChatTime"
+                style="@style/TextViewChatTime"
+                android:layout_alignBottom="@id/cvChatMessage"
+                android:layout_toEndOf="@id/cvChatMessage"
+                android:text="21:27" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</layout>

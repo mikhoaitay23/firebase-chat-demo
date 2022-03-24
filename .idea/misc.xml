@@ -3,11 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/android/firebase-chat-demo/app/src/main/res/drawable/ic_add.xml" value="0.2585" />
         <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/fragment_home.xml" value="0.36666666666666664" />
         <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/fragment_login.xml" value="0.36666666666666664" />
+        <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/fragment_message.xml" value="0.36666666666666664" />
         <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/fragment_plash.xml" value="0.36666666666666664" />
         <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/fragment_signup.xml" value="0.36666666666666664" />
+        <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/fragment_users.xml" value="0.36666666666666664" />
+        <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/item_rc_message_me.xml" value="0.33" />
+        <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/item_rc_message_other.xml" value="0.33" />
+        <entry key="..\:/android/firebase-chat-demo/app/src/main/res/layout/item_rc_users.xml" value="0.36666666666666664" />
         <entry key="..\:/android/firebase-chat-demo/app/src/main/res/menu/home_menu.xml" value="0.36666666666666664" />
       </map>
     </option>
