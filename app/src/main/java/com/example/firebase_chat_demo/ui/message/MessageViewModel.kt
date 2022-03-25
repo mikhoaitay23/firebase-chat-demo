@@ -2,31 +2,33 @@ package com.example.firebase_chat_demo.ui.message
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.firebase_chat_demo.data.model.message.Message
+import com.example.firebase_chat_demo.data.model.message.Chat
 import com.example.firebase_chat_demo.data.model.user.User
 import com.example.firebase_chat_demo.data.response.DataResponse
 import com.example.firebase_chat_demo.utils.Constants
 import com.example.firebase_chat_demo.utils.FirebaseUtils
-import com.example.firebase_chat_demo.utils.Utils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import java.util.*
-import kotlin.collections.HashMap
 
 class MessageViewModel(val application: Application, val userId: String) : ViewModel() {
 
     private var mFirebaseUser: FirebaseUser? = null
-    var mDatabaseReference: DatabaseReference? = null
+    private var mDatabaseReference: DatabaseReference? = null
+    private var mDatabaseReferenceChatsTable: DatabaseReference? = null
     var mFriend = MutableLiveData<User>()
     var messageLiveData = MutableLiveData<String>()
-    var mMessages = mutableListOf<Message>()
-    var mMessagesLiveData = MutableLiveData<DataResponse<MutableList<Message>>>()
+    var mChats = mutableListOf<Chat>()
+    var mMessagesLiveData = MutableLiveData<DataResponse<MutableList<Chat>>>()
+    private var mValueEventListener: ValueEventListener? = null
 
     init {
         mFirebaseUser = FirebaseAuth.getInstance().currentUser
         mDatabaseReference =
             FirebaseDatabase.getInstance().getReference(Constants.USERS_TABLE).child(userId)
+        mDatabaseReferenceChatsTable =
+            FirebaseDatabase.getInstance().getReference(Constants.CHATS_TABLE)
         mMessagesLiveData.value = DataResponse.DataEmptyResponse()
     }
 
@@ -51,36 +53,78 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
             val mHashMap: HashMap<String, Any> = HashMap()
             mHashMap["sender"] = mFirebaseUser!!.uid
             mHashMap["receiver"] = mFriend.value!!.id
-            mHashMap["receiverUsername"] = mFriend.value!!.username
             mHashMap["message"] = messageLiveData.value!!
             mHashMap["createdAt"] = Calendar.getInstance().timeInMillis.toString()
+            mHashMap["isSeen"] = "false"
 
             databaseReference.child(Constants.CHATS_TABLE).push().setValue(mHashMap)
+
+            val mMessagesDatabaseReference =
+                FirebaseDatabase.getInstance().getReference(Constants.MESSAGES_TABLE)
+                    .child(mFirebaseUser!!.uid).child(mFriend.value!!.id)
+            mMessagesDatabaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        mMessagesDatabaseReference.child("id").setValue(mFriend.value!!.id)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
             messageLiveData.value = ""
         }
     }
 
     fun getMessage() {
-        val mDatabaseReference = FirebaseDatabase.getInstance().getReference(Constants.CHATS_TABLE)
-        mDatabaseReference.addValueEventListener(object : ValueEventListener {
+        mDatabaseReferenceChatsTable!!.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                mMessages.clear()
+                mChats.clear()
                 for (i in snapshot.children) {
-                    val message = i.getValue(Message::class.java)
+                    val message = i.getValue(Chat::class.java)
                     if (message!!.sender!! == userId && message.receiver!! == FirebaseUtils.getMyUserId() ||
                         message.sender!! == FirebaseUtils.getMyUserId() && message.receiver!! == userId
                     ) {
-                        mMessages.add(message)
+                        mChats.add(message)
                     }
                 }
-                mMessagesLiveData.value = DataResponse.DataSuccessResponse(mMessages.asReversed())
+                mMessagesLiveData.value = DataResponse.DataSuccessResponse(mChats.asReversed())
             }
 
             override fun onCancelled(error: DatabaseError) {
 
             }
-
         })
+
+    }
+
+    fun getSeenMessage() {
+        mValueEventListener =
+            mDatabaseReferenceChatsTable!!.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (ds in snapshot.children) {
+                        val chat = ds.getValue(Chat::class.java)
+                        if (chat!!.receiver.equals(mFirebaseUser!!.uid) && chat.sender.equals(userId)) {
+                            val hashMap = HashMap<String, Any>()
+                            hashMap["isSeen"] = "true"
+                            ds.ref.updateChildren(hashMap)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+    }
+
+    fun disableValueEventListener() {
+        if (mValueEventListener != null) {
+            mDatabaseReferenceChatsTable!!.removeEventListener(mValueEventListener!!)
+        }
     }
 
     val imageUrl: LiveData<String> = Transformations.map(mFriend) {

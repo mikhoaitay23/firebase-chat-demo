@@ -8,4 +8,5 @@ object Constants {
 
     const val USERS_TABLE = "Users"
     const val CHATS_TABLE = "Chats"
+    const val MESSAGES_TABLE = "Messages"
 }

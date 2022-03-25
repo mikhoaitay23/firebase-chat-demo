@@ -17,6 +17,9 @@
     //Message
     <string name="enter_message">Enter message</string>
 
+    //Home
+    <string name="is_typing">Is typing…</string>
+
     //error
     <string name="empty_input">Empty input</string>
     <string name="sign_up_failed">Sign up not successful</string>

@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.firebase_chat_demo.data.model.message.Message
+import com.example.firebase_chat_demo.R
+import com.example.firebase_chat_demo.data.model.message.Chat
 import com.example.firebase_chat_demo.databinding.ItemRcMessageMeBinding
 import com.example.firebase_chat_demo.databinding.ItemRcMessageOtherBinding
 import com.example.firebase_chat_demo.utils.FirebaseUtils
@@ -14,11 +15,11 @@ import com.example.firebase_chat_demo.utils.Utils
 class MessageAdapter(private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val mMessageList = mutableListOf<Message>()
+    val mMessageList = mutableListOf<Chat>()
 
-    fun setMessageList(messages: MutableList<Message>) {
+    fun setMessageList(chats: MutableList<Chat>) {
         mMessageList.clear()
-        mMessageList.addAll(messages)
+        mMessageList.addAll(chats)
         notifyItemRangeInserted(0, mMessageList.size)
     }
 
@@ -108,6 +109,16 @@ class MessageAdapter(private val context: Context) :
                 binding.mViewChatPadding.visibility = View.VISIBLE
             }
             binding.mLayoutUrlPreview.visibility = View.GONE
+            if (position == 0) {
+                binding.imgStatus.visibility = View.VISIBLE
+                if (message.isSeen == "true") {
+                    binding.imgStatus.setImageResource(R.drawable.ic_seen)
+                } else {
+                    binding.imgStatus.setImageResource(R.drawable.ic_delivered)
+                }
+            } else {
+                binding.imgStatus.visibility = View.GONE
+            }
         }
     }
 
@@ -117,7 +128,6 @@ class MessageAdapter(private val context: Context) :
             val message = mMessageList[position]
             if (isContinuous) {
                 binding.imgImageProfile.visibility = View.INVISIBLE
-                binding.tvNickname.visibility = View.GONE
             } else {
                 binding.imgImageProfile.visibility = View.VISIBLE
 //                Utils.displayRoundImageFromUrl(
@@ -125,8 +135,6 @@ class MessageAdapter(private val context: Context) :
 //                    message.sender.profileUrl,
 //                    binding.imgImageProfile
 //                )
-                binding.tvNickname.visibility = View.VISIBLE
-                binding.tvNickname.text = message.receiverUsername
             }
             binding.tvChatMessage.text = message.message
             binding.tvChatTime.text = Utils.formatTime(message.createdAt!!.toLong())
@@ -135,16 +143,17 @@ class MessageAdapter(private val context: Context) :
 //            } else {
             binding.tvEdited.visibility = View.GONE
 //            }
+
             binding.mLayoutUrlPreview.visibility = View.GONE
         }
     }
 
-    private fun isContinuous(currentMessage: Message?, precedingMessage: Message?): Boolean {
-        if (currentMessage == null || precedingMessage == null) {
+    private fun isContinuous(currentChat: Chat?, precedingChat: Chat?): Boolean {
+        if (currentChat == null || precedingChat == null) {
             return false
         }
-        val currentUserId: String? = currentMessage.sender
-        val precedingUserId: String? = precedingMessage.sender
+        val currentUserId: String? = currentChat.sender
+        val precedingUserId: String? = precedingChat.sender
 
         return if (currentUserId == null || precedingUserId == null) {
             false

@@ -26,21 +26,11 @@
                 android:layout_marginEnd="8dp"
                 android:src="@mipmap/ic_launcher" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvNickname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/imgImageProfile"
-                android:layout_marginBottom="4dp"
-                android:layout_toEndOf="@id/imgImageProfile"
-                android:text="Daniel Silberschatz"
-                android:textSize="16sp" />
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvChatMessage"
                 style="@style/CardViewChat"
                 android:layout_alignWithParentIfMissing="true"
-                android:layout_below="@id/tvNickname"
+                android:layout_alignTop="@id/imgImageProfile"
                 android:layout_toEndOf="@id/imgImageProfile"
                 app:cardBackgroundColor="@color/bg_chat_bubble_other">
 

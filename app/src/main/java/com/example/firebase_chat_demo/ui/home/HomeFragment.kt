@@ -8,12 +8,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.firebase_chat_demo.R
 import com.example.firebase_chat_demo.base.basefragment.BaseFragment
+import com.example.firebase_chat_demo.data.model.LoadDataStatus
+import com.example.firebase_chat_demo.data.model.user.User
+import com.example.firebase_chat_demo.data.response.DataResponse
 import com.example.firebase_chat_demo.databinding.FragmentHomeBinding
+import com.example.firebase_chat_demo.ui.home.adapter.ChatsAdapter
 import com.google.firebase.auth.FirebaseAuth
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private lateinit var viewModel: HomeViewModel
+    private lateinit var mChatsAdapter: ChatsAdapter
 
     override fun getLayoutID() = R.layout.fragment_home
 
@@ -22,6 +27,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         (activity as AppCompatActivity).title = null
 
         viewModel.getCurrentUser()
+        viewModel.getChatList()
         binding!!.viewModel = viewModel
     }
 
@@ -29,6 +35,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         setHasOptionsMenu(true)
         val factory = HomeViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
+
+        viewModel.usersLiveData.observe(this) {
+            if (it.loadDataStatus == LoadDataStatus.SUCCESS) {
+                val result = (it as DataResponse.DataSuccessResponse).body
+                initRecycler(result)
+            }
+        }
 
     }
 
@@ -50,5 +63,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun initRecycler(users: MutableList<User>) {
+        mChatsAdapter = ChatsAdapter()
+        mChatsAdapter.setListUser(users)
+        binding!!.rcChats.apply {
+            adapter = mChatsAdapter
+            setHasFixedSize(true)
+        }
+        mChatsAdapter.setListener(object : ChatsAdapter.OnClickListener {
+            override fun onItemClickedListener(user: User) {
+                val action = HomeFragmentDirections.actionGlobalMessageFragment().setUserId(user.id)
+                findNavController().navigate(action)
+            }
+
+        })
     }
 }

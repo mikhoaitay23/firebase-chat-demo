@@ -8,7 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.firebase_chat_demo.R
 import com.example.firebase_chat_demo.base.basefragment.BaseFragment
 import com.example.firebase_chat_demo.data.model.LoadDataStatus
-import com.example.firebase_chat_demo.data.model.message.Message
+import com.example.firebase_chat_demo.data.model.message.Chat
 import com.example.firebase_chat_demo.data.response.DataResponse
 import com.example.firebase_chat_demo.databinding.FragmentMessageBinding
 import com.example.firebase_chat_demo.ui.message.adapter.MessageAdapter
@@ -35,13 +35,18 @@ class MessageFragment : BaseFragment<FragmentMessageBinding>() {
 
         val factory = MessageViewModel.Factory(requireActivity().application, args.userId)
         viewModel = ViewModelProvider(this, factory)[MessageViewModel::class.java]
-
+        viewModel.getSeenMessage()
         viewModel.mMessagesLiveData.observe(this) {
             if (it.loadDataStatus == LoadDataStatus.SUCCESS) {
                 val result = (it as DataResponse.DataSuccessResponse).body
                 initRecycler(result)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.disableValueEventListener()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -52,9 +57,9 @@ class MessageFragment : BaseFragment<FragmentMessageBinding>() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initRecycler(messages: MutableList<Message>) {
+    private fun initRecycler(chats: MutableList<Chat>) {
         mMessageAdapter = MessageAdapter(requireContext())
-        mMessageAdapter.setMessageList(messages)
+        mMessageAdapter.setMessageList(chats)
         binding!!.rcMessage.adapter = mMessageAdapter
     }
 }
