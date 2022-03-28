@@ -1,15 +1,21 @@
 package com.example.firebase_chat_demo.ui.message
 
 import android.app.Application
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.firebase_chat_demo.data.model.message.Chat
 import com.example.firebase_chat_demo.data.model.user.User
 import com.example.firebase_chat_demo.data.response.DataResponse
 import com.example.firebase_chat_demo.utils.Constants
 import com.example.firebase_chat_demo.utils.FirebaseUtils
+import com.example.firebase_chat_demo.utils.Utils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import java.util.*
 
 class MessageViewModel(val application: Application, val userId: String) : ViewModel() {
@@ -20,7 +26,7 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
     var mFriend = MutableLiveData<User>()
     var messageLiveData = MutableLiveData<String>()
     var mChats = mutableListOf<Chat>()
-    var mMessagesLiveData = MutableLiveData<DataResponse<MutableList<Chat>>>()
+    var mMessagesLiveData = MutableLiveData<DataResponse<Chat>>()
     private var mValueEventListener: ValueEventListener? = null
 
     init {
@@ -55,7 +61,8 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
             mHashMap["receiver"] = mFriend.value!!.id
             mHashMap["message"] = messageLiveData.value!!
             mHashMap["createdAt"] = Calendar.getInstance().timeInMillis.toString()
-            mHashMap["isSeen"] = "false"
+            mHashMap["seen"] = "false"
+            mHashMap["type"] = "text"
 
             databaseReference.child(Constants.CHATS_TABLE).push().setValue(mHashMap)
 
@@ -78,26 +85,80 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
         }
     }
 
-    fun getMessage() {
-        mDatabaseReferenceChatsTable!!.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                mChats.clear()
-                for (i in snapshot.children) {
-                    val message = i.getValue(Chat::class.java)
-                    if (message!!.sender!! == userId && message.receiver!! == FirebaseUtils.getMyUserId() ||
-                        message.sender!! == FirebaseUtils.getMyUserId() && message.receiver!! == userId
-                    ) {
-                        mChats.add(message)
+    fun onSendMediaFile(uri: Uri) {
+        val storageReference: StorageReference =
+            FirebaseStorage.getInstance().reference.child("Media files")
+        val databaseReference =
+            FirebaseDatabase.getInstance().reference.child(Constants.CHATS_TABLE).push()
+
+        val filePath: StorageReference = storageReference.child(databaseReference.key.toString())
+
+        val uploadTask: UploadTask = filePath.putFile(uri)
+        uploadTask.continueWithTask { p0 ->
+            if (!p0.isSuccessful) {
+                p0.exception
+            }
+            filePath.downloadUrl
+        }.addOnCompleteListener {
+            if (it.isSuccessful) {
+                val downloadUri = it.result
+                val mHashMap: HashMap<String, Any> = HashMap()
+                mHashMap["sender"] = mFirebaseUser!!.uid
+                mHashMap["receiver"] = mFriend.value!!.id
+                mHashMap["message"] = downloadUri.toString()
+                mHashMap["createdAt"] = Calendar.getInstance().timeInMillis.toString()
+                mHashMap["seen"] = "false"
+                mHashMap["type"] = Utils.getTypeMediaFromUri(application, uri)
+
+                databaseReference.setValue(mHashMap)
+
+                val mMessagesDatabaseReference =
+                    FirebaseDatabase.getInstance().getReference(Constants.MESSAGES_TABLE)
+                        .child(mFirebaseUser!!.uid).child(mFriend.value!!.id)
+                mMessagesDatabaseReference.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (!snapshot.exists()) {
+                            mMessagesDatabaseReference.child("id").setValue(mFriend.value!!.id)
+                        }
                     }
+
+                    override fun onCancelled(error: DatabaseError) {
+
+                    }
+
+                })
+            }
+        }
+    }
+
+    fun getMessage() {
+        mDatabaseReferenceChatsTable!!.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val message = snapshot.getValue(Chat::class.java)
+                if (message!!.sender!! == userId && message.receiver!! == FirebaseUtils.getMyUserId() ||
+                    message.sender!! == FirebaseUtils.getMyUserId() && message.receiver!! == userId
+                ) {
+                    mMessagesLiveData.value = DataResponse.DataSuccessResponse(message)
                 }
-                mMessagesLiveData.value = DataResponse.DataSuccessResponse(mChats.asReversed())
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+
             }
 
             override fun onCancelled(error: DatabaseError) {
 
             }
-        })
 
+        })
     }
 
     fun getSeenMessage() {
@@ -108,7 +169,7 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
                         val chat = ds.getValue(Chat::class.java)
                         if (chat!!.receiver.equals(mFirebaseUser!!.uid) && chat.sender.equals(userId)) {
                             val hashMap = HashMap<String, Any>()
-                            hashMap["isSeen"] = "true"
+                            hashMap["seen"] = "true"
                             ds.ref.updateChildren(hashMap)
                         }
                     }

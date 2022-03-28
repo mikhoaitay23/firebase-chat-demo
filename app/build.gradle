@@ -64,9 +64,13 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.0.1'
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.2'
     implementation 'com.google.firebase:firebase-core:20.1.1'
 
     //Circle image view
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    //ExoPlayer
+    implementation 'com.google.android.exoplayer:exoplayer:2.17.1'
 }

@@ -28,6 +28,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         viewModel.getCurrentUser()
         viewModel.getChatList()
+        viewModel.getMessage()
         binding!!.viewModel = viewModel
     }
 
@@ -40,6 +41,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             if (it.loadDataStatus == LoadDataStatus.SUCCESS) {
                 val result = (it as DataResponse.DataSuccessResponse).body
                 initRecycler(result)
+                viewModel.unreadMessages.observe(this) { count ->
+                    mChatsAdapter.setUnreadMessages(count)
+                }
             }
         }
 

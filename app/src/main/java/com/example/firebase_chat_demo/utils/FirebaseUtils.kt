@@ -32,7 +32,11 @@ object FirebaseUtils {
                             message.sender.equals(mFirebaseUser.uid) && message.receiver
                                 .equals(friendId)
                         ) {
-                            lastMessage = message.message.toString()
+                            lastMessage = if (message.type == "text") {
+                                message.message.toString()
+                            } else {
+                                textView.context.getString(R.string.uploaded_file)
+                            }
                         }
                     }
                 }

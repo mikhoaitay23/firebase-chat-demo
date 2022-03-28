@@ -16,9 +16,12 @@
 
     //Message
     <string name="enter_message">Enter message</string>
+    <string name="goto_settings">You must approve this permission in Permissions in the app settings on your device to continue using the app.</string>
+    <string name="settings">Settings</string>
 
     //Home
     <string name="is_typing">Is typing…</string>
+    <string name="uploaded_file">Uploaded file</string>
 
     //error
     <string name="empty_input">Empty input</string>

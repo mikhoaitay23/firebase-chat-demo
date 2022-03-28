@@ -5,5 +5,6 @@ data class Chat(
     var receiver: String? = "",
     var message: String? = "",
     var createdAt: String? = "",
-    var isSeen: String? = ""
+    var seen: String? = "",
+    var type: String? = ""
 )
