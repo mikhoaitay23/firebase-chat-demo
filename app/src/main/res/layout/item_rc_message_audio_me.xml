@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/mLayoutChatFileAudioMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/bg_chat_audio"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/btnPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tint="@color/white"
+                    app:srcCompat="@drawable/ic_play" />
+
+                <SeekBar
+                    android:id="@+id/mPlayerView"
+                    android:layout_width="220dp"
+                    android:layout_height="40dp"
+                    android:padding="12dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvChatTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/mLayoutChatFileAudioMessage"
+                android:layout_toStartOf="@id/mLayoutChatFileAudioMessage"
+                android:text="21:27"
+                android:textColor="#8e8e8e"
+                android:textSize="10sp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgStatus"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_above="@id/tvChatTime"
+                android:layout_alignStart="@id/tvChatTime"
+                android:layout_alignEnd="@id/tvChatTime" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</layout>

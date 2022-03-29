@@ -57,6 +57,12 @@ class MessageFragment : BasePermissionRequestFragment<FragmentMessageBinding>(),
                 mMessageAdapter.setMessageList(result)
             }
         }
+        viewModel.mMessageChangesLiveData.observe(this) {
+            if (it.loadDataStatus == LoadDataStatus.SUCCESS) {
+                val result = (it as DataResponse.DataSuccessResponse).body
+                mMessageAdapter.setMessageChanges(result)
+            }
+        }
     }
 
     override fun onPause() {

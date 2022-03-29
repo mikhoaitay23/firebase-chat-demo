@@ -1,14 +1,15 @@
 package com.example.firebase_chat_demo.ui.message
 
 import android.app.Application
+import android.media.MediaPlayer
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.firebase_chat_demo.data.model.message.Chat
 import com.example.firebase_chat_demo.data.model.user.User
 import com.example.firebase_chat_demo.data.response.DataResponse
 import com.example.firebase_chat_demo.utils.Constants
 import com.example.firebase_chat_demo.utils.FirebaseUtils
+import com.example.firebase_chat_demo.utils.MediaPlayerUtils
 import com.example.firebase_chat_demo.utils.Utils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -16,6 +17,7 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MessageViewModel(val application: Application, val userId: String) : ViewModel() {
@@ -25,9 +27,12 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
     private var mDatabaseReferenceChatsTable: DatabaseReference? = null
     var mFriend = MutableLiveData<User>()
     var messageLiveData = MutableLiveData<String>()
-    var mChats = mutableListOf<Chat>()
     var mMessagesLiveData = MutableLiveData<DataResponse<Chat>>()
+    var mMessageChangesLiveData = MutableLiveData<DataResponse<Chat>>()
+    var mMediaPlayerLiveData = MutableLiveData<DataResponse<MediaPlayer>>()
     private var mValueEventListener: ValueEventListener? = null
+    private val mediaPlayerUtils = MediaPlayerUtils()
+    private var mediaPlayer = MediaPlayer()
 
     init {
         mFirebaseUser = FirebaseAuth.getInstance().currentUser
@@ -36,6 +41,8 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
         mDatabaseReferenceChatsTable =
             FirebaseDatabase.getInstance().getReference(Constants.CHATS_TABLE)
         mMessagesLiveData.value = DataResponse.DataEmptyResponse()
+        mMessageChangesLiveData.value = DataResponse.DataEmptyResponse()
+        mMediaPlayerLiveData.value = DataResponse.DataEmptyResponse()
     }
 
     fun getFriend() {
@@ -143,7 +150,8 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-
+                val chat = snapshot.getValue(Chat::class.java)
+                mMessageChangesLiveData.value = DataResponse.DataSuccessResponse(chat!!)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -180,6 +188,20 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
                 }
 
             })
+    }
+
+    fun onStartMediaPlayer(url: String){
+        viewModelScope.launch {
+            mediaPlayerUtils.onPlay(mediaPlayer, url)
+            mMediaPlayerLiveData.value = DataResponse.DataSuccessResponse(mediaPlayer)
+        }
+    }
+
+    fun onPauseMediaPlayer(){
+        viewModelScope.launch {
+            mediaPlayerUtils.onPause(mediaPlayer)
+            mMediaPlayerLiveData.value = DataResponse.DataSuccessResponse(mediaPlayer)
+        }
     }
 
     fun disableValueEventListener() {

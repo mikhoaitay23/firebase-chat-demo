@@ -1,11 +1,9 @@
 package com.example.firebase_chat_demo.ui.message.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.firebase_chat_demo.R
@@ -24,7 +22,11 @@ class MessageAdapter(private val context: Context) :
     fun setMessageList(chat: Chat) {
         mMessageList.add(0, chat)
         notifyItemInserted(mMessageList.indexOf(chat))
-        notifyItemRangeChanged(mMessageList.indexOf(chat) - 1, mMessageList.indexOf(chat))
+        notifyItemRangeChanged(mMessageList.indexOf(chat) + 1, 1)
+    }
+
+    fun setMessageChanges(chat: Chat) {
+        notifyItemChanged(mMessageList.indexOf(chat) + 1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -66,20 +68,52 @@ class MessageAdapter(private val context: Context) :
                 MessageFileImageOtherHolder(itemRcMessageImageOtherBinding)
             }
             VIEW_TYPE_FILE_VIDEO_MY_MESSAGE -> {
-                val itemRcMessageFileVideoMeHolder = ItemRcMessageVideoMeBinding.inflate(
+                val itemRcMessageFileVideoMeBinding = ItemRcMessageVideoMeBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-                MessageFileVideoMeHolder(itemRcMessageFileVideoMeHolder)
+                MessageFileVideoMeHolder(itemRcMessageFileVideoMeBinding)
             }
-            else -> {
+            VIEW_TYPE_FILE_VIDEO_OTHER_MESSAGE -> {
                 val itemRcMessageFileVideoMeBinding = ItemRcMessageVideoOtherBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
                 MessageFileVideoOtherHolder(itemRcMessageFileVideoMeBinding)
+            }
+            VIEW_TYPE_FILE_MY_MESSAGE -> {
+                val itemRcMessageFileMeBinding = ItemRcMessageFileMeBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                MessageFileMeHolder(itemRcMessageFileMeBinding)
+            }
+            VIEW_TYPE_FILE_OTHER_MESSAGE -> {
+                val itemRcMessageFileOtherHolder = ItemRcMessageFileOtherBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                MessageFileOtherHolder(itemRcMessageFileOtherHolder)
+            }
+            VIEW_TYPE_FILE_AUDIO_MY_MESSAGE -> {
+                val itemRcMessageFileAudioMeHolder = ItemRcMessageAudioMeBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                MessageFileAudioMeHolder(itemRcMessageFileAudioMeHolder)
+            }
+            else -> {
+                val itemRcMessageFileAudioOtherHolder = ItemRcMessageAudioOtherBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                MessageFileAudioOtherHolder(itemRcMessageFileAudioOtherHolder)
             }
         }
     }
@@ -121,6 +155,16 @@ class MessageAdapter(private val context: Context) :
                 position,
                 isContinuous
             )
+            VIEW_TYPE_FILE_MY_MESSAGE -> (holder as MessageFileMeHolder).bind(position)
+            VIEW_TYPE_FILE_OTHER_MESSAGE -> (holder as MessageFileOtherHolder).bind(
+                position,
+                isContinuous
+            )
+            VIEW_TYPE_FILE_AUDIO_MY_MESSAGE -> (holder as MessageFileAudioMeHolder).bind(position)
+            VIEW_TYPE_FILE_AUDIO_OTHER_MESSAGE -> (holder as MessageFileAudioOtherHolder).bind(
+                position,
+                isContinuous
+            )
         }
     }
 
@@ -150,8 +194,18 @@ class MessageAdapter(private val context: Context) :
             } else {
                 VIEW_TYPE_FILE_VIDEO_OTHER_MESSAGE
             }
+        } else if (message.type == "audio/mpeg") {
+            if (isMyMessage) {
+                VIEW_TYPE_FILE_AUDIO_MY_MESSAGE
+            } else {
+                VIEW_TYPE_FILE_AUDIO_OTHER_MESSAGE
+            }
         } else {
-            VIEW_TYPE_FILE_AUDIO_MY_MESSAGE
+            if (isMyMessage) {
+                VIEW_TYPE_FILE_MY_MESSAGE
+            } else {
+                VIEW_TYPE_FILE_OTHER_MESSAGE
+            }
         }
     }
 
@@ -293,6 +347,72 @@ class MessageAdapter(private val context: Context) :
         }
     }
 
+    inner class MessageFileMeHolder(val binding: ItemRcMessageFileMeBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(position: Int) {
+            val message = mMessageList[position]
+            binding.tvChatTime.text = Utils.formatTime(message.createdAt!!.toLong())
+            if (position == 0) {
+                binding.imgStatus.visibility = View.VISIBLE
+                if (message.seen == "true") {
+                    Glide.with(binding.imgStatus).load(R.drawable.ic_seen).into(binding.imgStatus)
+                } else {
+                    Glide.with(binding.imgStatus).load(R.drawable.ic_delivered)
+                        .into(binding.imgStatus)
+                }
+            } else {
+                binding.imgStatus.visibility = View.GONE
+            }
+        }
+    }
+
+    inner class MessageFileOtherHolder(val binding: ItemRcMessageFileOtherBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(position: Int, isContinuous: Boolean) {
+            val message = mMessageList[position]
+            binding.tvChatTime.text = Utils.formatTime(message.createdAt!!.toLong())
+            if (isContinuous) {
+                binding.imgImageProfile.visibility = View.INVISIBLE
+                binding.tvChatTime.visibility = View.GONE
+            } else {
+                binding.imgImageProfile.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    inner class MessageFileAudioMeHolder(val binding: ItemRcMessageAudioMeBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(position: Int) {
+            val message = mMessageList[position]
+            binding.tvChatTime.text = Utils.formatTime(message.createdAt!!.toLong())
+            if (position == 0) {
+                binding.imgStatus.visibility = View.VISIBLE
+                if (message.seen == "true") {
+                    Glide.with(binding.imgStatus).load(R.drawable.ic_seen).into(binding.imgStatus)
+                } else {
+                    Glide.with(binding.imgStatus).load(R.drawable.ic_delivered)
+                        .into(binding.imgStatus)
+                }
+            } else {
+                binding.imgStatus.visibility = View.GONE
+            }
+        }
+    }
+
+    inner class MessageFileAudioOtherHolder(val binding: ItemRcMessageAudioOtherBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(position: Int, isContinuous: Boolean) {
+            val message = mMessageList[position]
+            binding.tvChatTime.text = Utils.formatTime(message.createdAt!!.toLong())
+            if (isContinuous) {
+                binding.imgImageProfile.visibility = View.INVISIBLE
+                binding.tvChatTime.visibility = View.GONE
+            } else {
+                binding.imgImageProfile.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun isContinuous(currentChat: Chat?, precedingChat: Chat?): Boolean {
         if (currentChat == null || precedingChat == null) {
             return false
@@ -322,5 +442,7 @@ class MessageAdapter(private val context: Context) :
         private const val VIEW_TYPE_FILE_VIDEO_OTHER_MESSAGE = 15
         private const val VIEW_TYPE_FILE_AUDIO_MY_MESSAGE = 16
         private const val VIEW_TYPE_FILE_AUDIO_OTHER_MESSAGE = 17
+        private const val VIEW_TYPE_FILE_MY_MESSAGE = 18
+        private const val VIEW_TYPE_FILE_OTHER_MESSAGE = 19
     }
 }
