@@ -1,6 +1,7 @@
 package com.example.firebase_chat_demo.ui.message.adapter
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -396,6 +397,9 @@ class MessageAdapter(private val context: Context) :
             } else {
                 binding.imgStatus.visibility = View.GONE
             }
+            binding.btnPlay.setOnClickListener {
+                mOnFileMessageListener.onAudioMessageClicked(message)
+            }
         }
     }
 
@@ -431,6 +435,7 @@ class MessageAdapter(private val context: Context) :
 
     interface OnFileMessageClickListener {
         fun onFileMessageClicked(playerView: PlayerView, chat: Chat)
+        fun onAudioMessageClicked(chat: Chat)
     }
 
     companion object {

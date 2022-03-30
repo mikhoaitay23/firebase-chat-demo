@@ -5,22 +5,32 @@ import java.io.IOException
 
 class MediaPlayerUtils {
 
-    fun onPlay(mediaPlayer: MediaPlayer, url: String) {
-        mediaPlayer.reset()
+    private var mMediaPlayer: MediaPlayer? = null
+
+    init {
+        mMediaPlayer = MediaPlayer()
+    }
+
+    fun onPlay(url: String) {
+        mMediaPlayer!!.reset()
         try {
-            mediaPlayer.setDataSource(url)
-            mediaPlayer.prepare()
-            mediaPlayer.start()
+            mMediaPlayer!!.setDataSource(url)
+            mMediaPlayer!!.prepare()
+            mMediaPlayer!!.start()
         } catch (e: IOException) {
             e.stackTrace
         }
     }
 
-    fun onPause(mediaPlayer: MediaPlayer) {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
+    fun onPause() {
+        if (mMediaPlayer!!.isPlaying) {
+            mMediaPlayer!!.pause()
         } else {
-            mediaPlayer.start()
+            mMediaPlayer!!.start()
         }
+    }
+
+    fun isPlaying(): Boolean {
+        return  mMediaPlayer != null && mMediaPlayer!!.isPlaying
     }
 }

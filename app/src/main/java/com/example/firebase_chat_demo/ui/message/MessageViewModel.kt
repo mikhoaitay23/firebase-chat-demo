@@ -31,8 +31,6 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
     var mMessageChangesLiveData = MutableLiveData<DataResponse<Chat>>()
     var mMediaPlayerLiveData = MutableLiveData<DataResponse<MediaPlayer>>()
     private var mValueEventListener: ValueEventListener? = null
-    private val mediaPlayerUtils = MediaPlayerUtils()
-    private var mediaPlayer = MediaPlayer()
 
     init {
         mFirebaseUser = FirebaseAuth.getInstance().currentUser
@@ -188,20 +186,6 @@ class MessageViewModel(val application: Application, val userId: String) : ViewM
                 }
 
             })
-    }
-
-    fun onStartMediaPlayer(url: String){
-        viewModelScope.launch {
-            mediaPlayerUtils.onPlay(mediaPlayer, url)
-            mMediaPlayerLiveData.value = DataResponse.DataSuccessResponse(mediaPlayer)
-        }
-    }
-
-    fun onPauseMediaPlayer(){
-        viewModelScope.launch {
-            mediaPlayerUtils.onPause(mediaPlayer)
-            mMediaPlayerLiveData.value = DataResponse.DataSuccessResponse(mediaPlayer)
-        }
     }
 
     fun disableValueEventListener() {

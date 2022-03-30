@@ -19,6 +19,7 @@ import com.example.firebase_chat_demo.data.response.DataResponse
 import com.example.firebase_chat_demo.databinding.FragmentMessageBinding
 import com.example.firebase_chat_demo.ui.message.adapter.MessageAdapter
 import com.example.firebase_chat_demo.utils.ExoPlayerUtils
+import com.example.firebase_chat_demo.utils.MediaPlayerUtils
 import com.example.firebase_chat_demo.utils.Utils
 import com.google.android.exoplayer2.ui.PlayerView
 
@@ -29,6 +30,9 @@ class MessageFragment : BasePermissionRequestFragment<FragmentMessageBinding>(),
     private lateinit var mMessageAdapter: MessageAdapter
     private val mExoPlayerUtils: ExoPlayerUtils by lazy {
         ExoPlayerUtils()
+    }
+    private val mMediaPlayerUtils: MediaPlayerUtils by lazy {
+        MediaPlayerUtils()
     }
 
     override fun getLayoutID() = R.layout.fragment_message
@@ -97,6 +101,10 @@ class MessageFragment : BasePermissionRequestFragment<FragmentMessageBinding>(),
         mMessageAdapter.setFileMessageClickListener(object : MessageAdapter.OnFileMessageClickListener {
             override fun onFileMessageClicked(playerView: PlayerView, chat: Chat) {
                 mExoPlayerUtils.initPlayer(requireContext(), playerView, chat.message!!)
+            }
+
+            override fun onAudioMessageClicked(chat: Chat) {
+                mMediaPlayerUtils.onPlay(chat.message!!)
             }
 
         })
