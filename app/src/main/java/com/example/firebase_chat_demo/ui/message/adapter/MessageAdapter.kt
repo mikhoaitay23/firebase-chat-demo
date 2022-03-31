@@ -11,6 +11,7 @@ import com.example.firebase_chat_demo.R
 import com.example.firebase_chat_demo.data.model.message.Chat
 import com.example.firebase_chat_demo.databinding.*
 import com.example.firebase_chat_demo.utils.FirebaseUtils
+import com.example.firebase_chat_demo.utils.MediaPlayerUtils
 import com.example.firebase_chat_demo.utils.Utils
 import com.google.android.exoplayer2.ui.PlayerView
 
@@ -19,6 +20,11 @@ class MessageAdapter(private val context: Context) :
 
     val mMessageList = mutableListOf<Chat>()
     private lateinit var mOnFileMessageListener: OnFileMessageClickListener
+    private var mMediaPlayerUtils: MediaPlayerUtils? = null
+
+    init {
+        mMediaPlayerUtils = MediaPlayerUtils()
+    }
 
     fun setMessageList(chat: Chat) {
         mMessageList.add(0, chat)
@@ -397,8 +403,19 @@ class MessageAdapter(private val context: Context) :
             } else {
                 binding.imgStatus.visibility = View.GONE
             }
+            if (mMediaPlayerUtils!!.isPlaying()) {
+                binding.btnPlay.setImageResource(R.drawable.ic_pause)
+            } else {
+                binding.btnPlay.setImageResource(R.drawable.ic_play)
+            }
             binding.btnPlay.setOnClickListener {
-                mOnFileMessageListener.onAudioMessageClicked(message)
+                if (mMediaPlayerUtils!!.isPlaying()) {
+                    mMediaPlayerUtils!!.onPause()
+                    notifyItemChanged(position)
+                } else {
+                    mMediaPlayerUtils!!.onPlay(message.message!!)
+                    notifyItemChanged(position)
+                }
             }
         }
     }
@@ -435,7 +452,6 @@ class MessageAdapter(private val context: Context) :
 
     interface OnFileMessageClickListener {
         fun onFileMessageClicked(playerView: PlayerView, chat: Chat)
-        fun onAudioMessageClicked(chat: Chat)
     }
 
     companion object {

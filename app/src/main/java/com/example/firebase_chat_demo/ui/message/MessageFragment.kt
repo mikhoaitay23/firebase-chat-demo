@@ -23,16 +23,14 @@ import com.example.firebase_chat_demo.utils.MediaPlayerUtils
 import com.example.firebase_chat_demo.utils.Utils
 import com.google.android.exoplayer2.ui.PlayerView
 
-class MessageFragment : BasePermissionRequestFragment<FragmentMessageBinding>(), View.OnClickListener {
+class MessageFragment : BasePermissionRequestFragment<FragmentMessageBinding>(),
+    View.OnClickListener {
 
     private lateinit var viewModel: MessageViewModel
     private val args: MessageFragmentArgs by navArgs()
     private lateinit var mMessageAdapter: MessageAdapter
     private val mExoPlayerUtils: ExoPlayerUtils by lazy {
         ExoPlayerUtils()
-    }
-    private val mMediaPlayerUtils: MediaPlayerUtils by lazy {
-        MediaPlayerUtils()
     }
 
     override fun getLayoutID() = R.layout.fragment_message
@@ -83,7 +81,7 @@ class MessageFragment : BasePermissionRequestFragment<FragmentMessageBinding>(),
     }
 
     override fun onClick(p0: View?) {
-        if (p0 == binding!!.btnUpload){
+        if (p0 == binding!!.btnUpload) {
             if (Utils.storagePermissionGrant(requireContext())) {
                 val intent = Intent()
                 intent.type = "*/*"
@@ -98,15 +96,11 @@ class MessageFragment : BasePermissionRequestFragment<FragmentMessageBinding>(),
     private fun initRecycler() {
         mMessageAdapter = MessageAdapter(requireContext())
         binding!!.rcMessage.adapter = mMessageAdapter
-        mMessageAdapter.setFileMessageClickListener(object : MessageAdapter.OnFileMessageClickListener {
+        mMessageAdapter.setFileMessageClickListener(object :
+            MessageAdapter.OnFileMessageClickListener {
             override fun onFileMessageClicked(playerView: PlayerView, chat: Chat) {
                 mExoPlayerUtils.initPlayer(requireContext(), playerView, chat.message!!)
             }
-
-            override fun onAudioMessageClicked(chat: Chat) {
-                mMediaPlayerUtils.onPlay(chat.message!!)
-            }
-
         })
     }
 
@@ -121,7 +115,7 @@ class MessageFragment : BasePermissionRequestFragment<FragmentMessageBinding>(),
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
-                if (intent != null){
+                if (intent != null) {
                     viewModel.onSendMediaFile(intent.data!!)
                 }
             }

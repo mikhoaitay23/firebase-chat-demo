@@ -17,6 +17,9 @@ class MediaPlayerUtils {
             mMediaPlayer!!.setDataSource(url)
             mMediaPlayer!!.prepare()
             mMediaPlayer!!.start()
+            mMediaPlayer!!.setOnCompletionListener {
+
+            }
         } catch (e: IOException) {
             e.stackTrace
         }

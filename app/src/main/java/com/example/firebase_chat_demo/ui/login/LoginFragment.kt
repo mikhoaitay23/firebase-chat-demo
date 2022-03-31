@@ -1,6 +1,5 @@
 package com.example.firebase_chat_demo.ui.login
 
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
