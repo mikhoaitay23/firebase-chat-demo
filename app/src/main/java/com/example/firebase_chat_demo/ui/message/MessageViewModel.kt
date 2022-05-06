@@ -9,7 +9,6 @@ import com.example.firebase_chat_demo.data.model.user.User
 import com.example.firebase_chat_demo.data.response.DataResponse
 import com.example.firebase_chat_demo.utils.Constants
 import com.example.firebase_chat_demo.utils.FirebaseUtils
-import com.example.firebase_chat_demo.utils.MediaPlayerUtils
 import com.example.firebase_chat_demo.utils.Utils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -17,7 +16,6 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
-import kotlinx.coroutines.launch
 import java.util.*
 
 class MessageViewModel(val application: Application, val userId: String) : ViewModel() {
